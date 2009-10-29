@@ -31,6 +31,10 @@ If you have any questions please sent them to code (at) thorsten-ott.de
 
 == Changelog ==
 
+= 1.0.1 =
+
+* Added the possibility to display also non @replies to a users comment or post within the widget.
+
 = 1.0.0 =
 
 * Initial version of the plugin
