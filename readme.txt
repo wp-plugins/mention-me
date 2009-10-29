@@ -3,7 +3,7 @@ Contributors: Thorsten Ott
 Tags: widget, p2, @replies
 Requires at least: 2.8
 Tested up to: 2.9
-Stable tag: 1.0.2
+Stable tag: 1.0.3
 
 == Description ==
 
@@ -23,13 +23,17 @@ It can be also configured to show direct replies to comments or posts without th
 2. Activate the Mention-Me Widget plugin
 3. Go to the Appearance > Widget page and place the widget in your sidebar in the Design
 
-If you find any bugs or have any ideas, please mail us.
+If you find any bugs or have any ideas, please mail them to code (at) thorsten-ott.de
 
 == Frequently Asked Questions ==
 
 If you have any questions please sent them to code (at) thorsten-ott.de
 
 == Changelog ==
+
+= 1.0.3 =
+
+* some cleanup
 
 = 1.0.2 =
 

@@ -3,8 +3,8 @@
 Plugin Name: Mention-Me Widget
 Plugin URI: http://wordpress.org/extend/plugins/mention-me/
 Description: Simple widget based on p2s recent-comment widget in order to display @replies for a logged in user.
-Author: Thorsten Ott
-Version: 1.0.0
+Author: Thorsten Ott <code (at) thorsten-ott.de>
+Version: 1.0.3
 Author URI: http://blog.webzappr.com
 */
 class Mention_Me extends WP_Widget {
