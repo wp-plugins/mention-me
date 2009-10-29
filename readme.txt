@@ -3,7 +3,7 @@ Contributors: Thorsten Ott
 Tags: widget, p2, @replies
 Requires at least: 2.8
 Tested up to: 2.9
-Stable tag: 1.0.1
+Stable tag: 1.0.2
 
 == Description ==
 
@@ -31,7 +31,7 @@ If you have any questions please sent them to code (at) thorsten-ott.de
 
 == Changelog ==
 
-= 1.0.1 =
+= 1.0.2 =
 
 * Added the possibility to display also non @replies to a users comment or post within the widget.
 
