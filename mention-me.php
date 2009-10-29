@@ -17,7 +17,6 @@ class Mention_Me extends WP_Widget {
 		
 		$this->default_num_to_show = 3;
 		$this->default_avatar_size = 32;
-		
 	}
 	
 	function flush_widget_cache() {
@@ -39,6 +38,12 @@ class Mention_Me extends WP_Widget {
 		$num_to_show = esc_attr( $instance['num_to_show'] );
 		$num_to_show_id = $this->get_field_id('num_to_show');
 		$num_to_show_name = $this->get_field_name('num_to_show');
+		$show_also_post_followups = esc_attr( $instance['show_also_post_followups'] );
+		$show_also_post_followups_id = $this->get_field_id('show_also_post_followups');
+		$show_also_post_followups_name = $this->get_field_name('show_also_post_followups');
+		$show_also_comment_followups = esc_attr( $instance['show_also_comment_followups'] );
+		$show_also_comment_followups_id = $this->get_field_id('show_also_comment_followups');
+		$show_also_comment_followups_name = $this->get_field_name('show_also_comment_followups');
 		$avatar_size = esc_attr( $instance['avatar_size'] );
 		$avatar_size_id = $this->get_field_id('avatar_size');
 		$avatar_size_name = $this->get_field_name('avatar_size');
@@ -48,19 +53,31 @@ class Mention_Me extends WP_Widget {
 		);
 ?>
 	<p>
-		<label for="<?php echo $title_id ?>"><?php _e('Title:', 'p2') ?> 
+		<label for="<?php echo $title_id ?>"><?php _e('Title:', 'mentionme') ?> 
 			<input type="text" class="widefat" id="<?php echo $title_id ?>" name="<?php echo $title_name ?>"
 				value="<?php echo $title; ?>" />
 		</label>
 	</p>
 	<p>
-		<label for="<?php echo $num_to_show_id ?>"><?php _e('Number of mentions to show:', 'p2') ?> 
+		<label for="<?php echo $num_to_show_id ?>"><?php _e('Number of mentions to show:', 'mentionme') ?> 
 			<input type="text" class="widefat" id="<?php echo $num_to_show_id ?>" name="<?php echo $num_to_show_name ?>"
 				value="<?php echo $num_to_show; ?>" />
 		</label>
 	</p>
 	<p>
-		<label for="<?php echo $avatar_size_id ?>"><?php _e('Avatars:', 'p2') ?> 
+		<label for="<?php echo $show_also_post_followups_id ?>"><?php _e('Show also replies to your posts without @:', 'mentionme') ?> 
+			<input type="checkbox" value=1 id="<?php echo $show_also_post_followups_id ?>" name="<?php echo $show_also_post_followups_name ?>"
+				<?php if( $show_also_post_followups ): echo 'checked="checked"'; endif; ?> />
+		</label>
+	</p>
+	<p>
+		<label for="<?php echo $show_also_comment_followups_id ?>"><?php _e('Show also replies to your comments without @:', 'mentionme') ?> 
+			<input type="checkbox" value=1 id="<?php echo $show_also_comment_followups_id ?>" name="<?php echo $show_also_comment_followups_name ?>"
+				<?php if( $show_also_comment_followups ): echo 'checked="checked"'; endif; ?> />
+		</label>
+	</p>
+	<p>
+		<label for="<?php echo $avatar_size_id ?>"><?php _e('Avatars:', 'mentionme') ?> 
 			<select name="<?php echo $avatar_size_name ?>" id="<?php echo $avatar_size_id ?>">
 			<?php foreach($sizes as $value => $label): ?>
 				<option value="<?php echo $value ?>" <?php selected($value, $avatar_size); ?>><?php echo $label; ?></option>
@@ -75,6 +92,8 @@ class Mention_Me extends WP_Widget {
 	function update( $new_instance, $old_instance ) {
 		$new_instance['num_to_show'] = (int)$new_instance['num_to_show']? (int)$new_instance['num_to_show'] : $this->default_num_to_show;
 		$new_instance['avatar_size'] = (int)$new_instance['avatar_size']? (int)$new_instance['avatar_size'] : $this->default_avatar_size;
+		$new_instance['show_also_post_followups'] = $new_instance['show_also_post_followups'] ? true : false;
+		$new_instance['show_also_comment_followups'] = $new_instance['show_also_comment_followups'] ? true : false;
 		return $new_instance;
 	}
 	
@@ -87,11 +106,13 @@ class Mention_Me extends WP_Widget {
 		
 		$title = (isset( $instance['title'] ) && $instance['title'])? $instance['title'] : __('Recent mentions', 'p2');
 		$num_to_show = (isset( $instance['num_to_show'] ) && (int)$instance['num_to_show'])? (int)$instance['num_to_show'] : $this->default_num_to_show;
+		$show_also_comment_followups = ( isset( $instance['show_also_comment_followups'] ) && $instance['show_also_comment_followups'] ) ? true : false;
+		$show_also_post_followups = ( isset( $instance['show_also_post_followups'] ) && $instance['show_also_post_followups'] ) ? true : false;
 		$avatar_size = (isset( $instance['avatar_size'] ) && (int)$instance['avatar_size'])? (int)$instance['avatar_size'] : $this->default_avatar_size;
 		
 		$no_avatar = $avatar_size == '-1';
 		
-		$mentions = $this->recent_mentions( $num_to_show );
+		$mentions = $this->recent_mentions( $num_to_show, $show_also_post_followups, $show_also_comment_followups );
 		
 		echo $before_widget . $before_title . wp_specialchars( $title ) . $after_title;
 ?>
@@ -164,7 +185,7 @@ class Mention_Me extends WP_Widget {
 		return $name_map;
 	}
 	
-	function recent_mentions( $num_to_show ) {
+	function recent_mentions( $num_to_show, $show_also_post_followups=false, $show_also_comment_followups=false ) {
 		global $wpdb, $current_user;
 
 		//$cache = wp_cache_get( 'p2_recent_mentions_' . $current_user->ID, 'widget' );
@@ -183,6 +204,18 @@ class Mention_Me extends WP_Widget {
 				$post_mapping[] = "post_content LIKE '%$map%'";
 			}
 		}
+		
+		if ( $show_also_comment_followups ) {
+			$comment_replies = (array) $wpdb->get_results("SELECT comment_id as ID, comment_post_id as post_id, user_id as user_id, comment_author as author, comment_author_url as author_url, comment_author_email as author_email, comment_content as content, comment_date_gmt as gmt_date FROM $wpdb->comments WHERE comment_approved = '1' AND comment_parent IN ( SELECT comment_id FROM $wpdb->comments WHERE comment_approved = '1' AND user_id = {$current_user->ID} ) ORDER BY comment_date_gmt DESC");
+		} else {
+			$comment_replies = array();
+		}
+		if ( $show_also_post_followups ) {
+			$post_replies = (array) $wpdb->get_results("SELECT comment_id as ID, comment_post_id as post_id, user_id as user_id, comment_author as author, comment_author_url as author_url, comment_author_email as author_email, comment_content as content, comment_date_gmt as gmt_date FROM $wpdb->comments WHERE  comment_approved = '1' AND comment_parent = 0 AND comment_post_id IN ( SELECT ID FROM $wpdb->posts WHERE post_status = 'publish' AND post_author = {$current_user->ID} ) ORDER BY comment_date_gmt DESC");
+		} else {
+			$post_replies = array();
+		}
+			
 		if ( !empty( $comment_mapping ) ) {
 			$where_add = ' AND (' . join( " OR ", $comment_mapping ) . ') ';
 			$mentions_comments = (array) $wpdb->get_results("SELECT comment_id as ID, comment_post_id as post_id, user_id as user_id, comment_author as author, comment_author_url as author_url, comment_author_email as author_email, comment_content as content, comment_date_gmt as gmt_date FROM $wpdb->comments WHERE comment_approved = '1' $where_add ORDER BY comment_date_gmt DESC");
@@ -192,12 +225,12 @@ class Mention_Me extends WP_Widget {
 		
 		if ( !empty( $post_mapping ) ) {
 			$where_add = ' AND (' . join( " OR ", $post_mapping ) . ') ';
-			$mentions_posts = (array) $wpdb->get_results("SELECT ID as ID, ID as post_id, post_author as user_id, post_author as author, NULL as author_url, NULL as author_email, post_content as content, post_date_gmt as gmt_date FROM $wpdb->posts WHERE post_status = 'publish' $where_add ORDER BY post_date_gmt DESC");
+			$mentions_posts = (array) $wpdb->get_results("SELECT ID as ID, ID as post_id, post_author as user_id, post_author as author, NULL as author_url, NULL as author_email, post_content as content, post_date_gmt as gmt_date FROM $wpdb->posts as p1 WHERE post_status = 'publish' $where_add ORDER BY post_date_gmt DESC");
 		} else {
 			$mentions_posts = array();
 		}
 		
-		$mentions = array_merge( $mentions_comments, $mentions_posts );
+		$mentions = array_merge( $comment_replies, $post_replies, $mentions_comments, $mentions_posts );
 		
 		$sort=array();
 		foreach( $mentions as $data ) {

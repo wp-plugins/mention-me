@@ -3,11 +3,12 @@ Contributors: Thorsten Ott
 Tags: widget, p2, @replies
 Requires at least: 2.8
 Tested up to: 2.9
-Stable tag: 1.0.0
+Stable tag: 1.0.1
 
 == Description ==
 
 Simple widget to extend P2s (and other themes) functionality and display recent @replies for a logged in user in the sidebar.
+It can be also configured to show direct replies to comments or posts without the @username indication.
 
 == Installation ==
 
