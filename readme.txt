@@ -2,13 +2,18 @@
 Contributors: Thorsten Ott
 Tags: widget, p2, @replies
 Requires at least: 2.8
-Tested up to: 2.9
-Stable tag: 1.0.3
+Tested up to: 2.8.5
+Stable tag: 1.0.4
 
 == Description ==
 
 Simple widget to extend P2s (and other themes) functionality and display recent @replies for a logged in user in the sidebar.
 It can be also configured to show direct replies to comments or posts without the @username indication.
+
+== Screenshots ==
+
+1. Mention-Me in action
+2. Mention-Me Widget option.
 
 == Installation ==
 
@@ -31,6 +36,10 @@ If you have any questions please sent them to code (at) thorsten-ott.de
 
 == Changelog ==
 
+= 1.0.4 =
+
+* fixing screenshots
+
 = 1.0.3 =
 
 * some cleanup
@@ -42,8 +51,3 @@ If you have any questions please sent them to code (at) thorsten-ott.de
 = 1.0.0 =
 
 * Initial version of the plugin
-
-== Screenshots ==
-
-1. Mention-Me Widget option.
-2. Mention-Me in action
