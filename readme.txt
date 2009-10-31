@@ -3,7 +3,7 @@ Contributors: Thorsten Ott
 Tags: widget, p2, @replies
 Requires at least: 2.8
 Tested up to: 2.8.5
-Stable tag: 1.0.4
+Stable tag: 1.0.5
 
 == Description ==
 
@@ -35,6 +35,10 @@ If you find any bugs or have any ideas, please mail them to code (at) thorsten-o
 If you have any questions please sent them to code (at) thorsten-ott.de
 
 == Changelog ==
+
+= 1.0.5 =
+
+* increasing version numbering
 
 = 1.0.4 =
 
